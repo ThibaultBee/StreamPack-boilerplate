@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- When selected -->
+    <item android:drawable="@drawable/ic_live_button_checked" android:state_checked="true" />
+    <!-- When not selected -->
+    <item android:drawable="@drawable/ic_live_button_unchecked" android:state_checked="false" />
+</selector>
