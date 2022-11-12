@@ -109,17 +109,16 @@ class MainActivity : AppCompatActivity() {
                  * with coroutines.
                  */
                 lifecycleScope.launch {
-                    /**
-                     * For SRT, use srt://my.server.url:9998?streamid=myStreamId&passphrase=myPassphrase
-                     */
                     try {
                         /**
                          * Always lock the device orientation during a live streaming to avoid
                          * to recreate the Activity.
                          */
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
-                        streamer.startStream("rtmp://192.168.1.12/app/streamKey")
-                        //streamer.startStream("rtmp://my.server.url:1234/app/streamKey")
+                        /**
+                         * For SRT, use srt://my.server.url:9998?streamid=myStreamId&passphrase=myPassphrase
+                         */
+                        streamer.startStream("rtmp://my.server.url:1234/app/streamKey")
                     } catch (e: Exception) {
                         binding.liveButton.isChecked = false
                         Log.e(TAG, "Failed to connect", e)
