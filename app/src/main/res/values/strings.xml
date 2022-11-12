@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Streaming App</string>
+    <string name="denied">Denied</string>
+    <string name="accept">Accept</string>
 </resources>

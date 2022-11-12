@@ -16,6 +16,7 @@ import io.github.thibaultbee.streampack.data.VideoConfig
 import io.github.thibaultbee.streampack.error.StreamPackError
 import io.github.thibaultbee.streampack.example.databinding.ActivityMainBinding
 import io.github.thibaultbee.streampack.example.utils.PermissionsManager
+import io.github.thibaultbee.streampack.example.utils.showDialog
 import io.github.thibaultbee.streampack.example.utils.toast
 import io.github.thibaultbee.streampack.ext.rtmp.streamers.CameraRtmpLiveStreamer
 import io.github.thibaultbee.streampack.ext.srt.streamers.CameraSrtLiveStreamer
@@ -36,13 +37,30 @@ class MainActivity : AppCompatActivity() {
     private val permissionsManager = PermissionsManager(this,
         streamerRequiredPermissions,
         onAllGranted = { inflateStreamer() },
-        onShowPermissionRationale = { true },
-        onDenied = {})
+        onShowPermissionRationale = { permissions, onRequiredPermissionLastTime ->
+            // Explain why we need permissions
+            showDialog(
+                title = "Permissions denied",
+                message = "Explain why you need to grant $permissions permissions to stream",
+                positiveButtonText = R.string.accept,
+                onPositiveButtonClick = { onRequiredPermissionLastTime() },
+                negativeButtonText = R.string.denied
+            )
+        },
+        onDenied = {
+            showDialog(
+                "Permissions denied",
+                "You need to grant all permissions to stream",
+                positiveButtonText = 0,
+                negativeButtonText = 0
+            )
+        }
+    )
 
     // Reports and manages error with [OnErrorListener]
     private val errorListener = object : OnErrorListener {
         override fun onError(error: StreamPackError) {
-            toast("An error occured: $error")
+            toast("An error occurred: $error")
         }
     }
 
@@ -114,8 +132,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         permissionsManager.requestPermissions()
     }
 
