@@ -45,9 +45,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'io.github.thibaultbee:streampack:2.5.0'
-    implementation 'io.github.thibaultbee:streampack-extension-rtmp:2.5.0'
-    implementation 'io.github.thibaultbee:streampack-extension-srt:2.5.0'
+    implementation "io.github.thibaultbee:streampack:${streampackVersion}"
+    // Only needed for RTMP live streaming
+    implementation "io.github.thibaultbee:streampack-extension-rtmp:${streampackVersion}"
+    // Only needed for SRT live streaming
+    implementation "io.github.thibaultbee:streampack-extension-srt:${streampackVersion}"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
     testImplementation 'junit:junit:4.13.2'
