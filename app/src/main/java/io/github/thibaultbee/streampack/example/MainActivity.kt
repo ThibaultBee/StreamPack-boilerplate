@@ -24,7 +24,6 @@ import io.github.thibaultbee.streampack.listeners.OnConnectionListener
 import io.github.thibaultbee.streampack.listeners.OnErrorListener
 import io.github.thibaultbee.streampack.streamers.StreamerLifeCycleObserver
 import io.github.thibaultbee.streampack.streamers.helpers.CameraStreamerConfigurationHelper
-import io.github.thibaultbee.streampack.utils.TAG
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -125,8 +124,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                streamer.stopStream()
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                lifecycleScope.launch {
+                    streamer.stopStream()
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
             }
         }
     }
@@ -147,6 +148,7 @@ class MainActivity : AppCompatActivity() {
         binding.preview.streamer = streamer // Bind the streamer to the preview
     }
 
+    @SuppressLint("MissingPermission")
     private fun configureStreamer() {
         /**
          * To check the parameters supported by the device, you can check parameter against:
@@ -184,5 +186,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun toast(message: String) {
         runOnUiThread { applicationContext.toast(message) }
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }

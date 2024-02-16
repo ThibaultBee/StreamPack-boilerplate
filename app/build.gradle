@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'io.github.thibaultbee.streampack.example'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "io.github.thibaultbee.streampack.example"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -31,7 +31,9 @@ android {
         jvmTarget = '1.8'
     }
     packagingOptions {
-        pickFirst '**/*.so'
+        jniLibs {
+            pickFirsts += ['**/*.so']
+        }
     }
     buildFeatures {
         viewBinding true
@@ -40,9 +42,9 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     implementation "io.github.thibaultbee:streampack:${streampackVersion}"
@@ -50,7 +52,7 @@ dependencies {
     implementation "io.github.thibaultbee:streampack-extension-rtmp:${streampackVersion}"
     // Only needed for SRT live streaming
     implementation "io.github.thibaultbee:streampack-extension-srt:${streampackVersion}"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
