@@ -47,11 +47,13 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 
-    implementation "io.github.thibaultbee:streampack:${streampackVersion}"
-    // Only needed for RTMP live streaming
-    implementation "io.github.thibaultbee:streampack-extension-rtmp:${streampackVersion}"
-    // Only needed for SRT live streaming
-    implementation "io.github.thibaultbee:streampack-extension-srt:${streampackVersion}"
+    implementation "io.github.thibaultbee.streampack:streampack-core:${streampackVersion}"
+    // For the `PreviewView`
+    implementation "io.github.thibaultbee.streampack:streampack-ui:${streampackVersion}"
+    // TODO: Only needed for RTMP live streaming: remove if you don't need it
+    implementation "io.github.thibaultbee.streampack:streampack-extension-rtmp:${streampackVersion}"
+    // TODO: Only needed for SRT live streaming: remove if you don't need it
+    implementation "io.github.thibaultbee.streampack:streampack-extension-srt:${streampackVersion}"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
 
     testImplementation 'junit:junit:4.13.2'
