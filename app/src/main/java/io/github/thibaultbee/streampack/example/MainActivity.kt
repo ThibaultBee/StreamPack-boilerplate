@@ -226,9 +226,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setStreamerView() {
-        binding.preview.streamer = streamer // Bind the streamer to the preview
         lifecycleScope.launch {
-            binding.preview.startPreview()
+            binding.preview.setVideoSourceProvider(streamer) // Bind the streamer to the preview
         }
     }
 

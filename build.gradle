@@ -2,7 +2,7 @@
 buildscript {
     ext {
         // Upgrade StreamPack version here
-        streampackVersion = '3.0.2'
+        streampackVersion = '3.1.0'
     }
 }
 
