@@ -1,4 +1,4 @@
-package io.github.thibaultbee.streampack.example
+package io.github.thibaultbee.streampack.app
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,12 +9,12 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import io.github.thibaultbee.streampack.app.databinding.ActivityMainBinding
 import io.github.thibaultbee.streampack.core.elements.sources.video.camera.extensions.defaultCameraId
 import io.github.thibaultbee.streampack.core.streamers.lifecycle.StreamerActivityLifeCycleObserver
-import io.github.thibaultbee.streampack.example.databinding.ActivityMainBinding
-import io.github.thibaultbee.streampack.example.utils.PermissionsManager
-import io.github.thibaultbee.streampack.example.utils.showDialog
-import io.github.thibaultbee.streampack.example.utils.toast
+import io.github.thibaultbee.streampack.app.utils.PermissionsManager
+import io.github.thibaultbee.streampack.app.utils.showDialog
+import io.github.thibaultbee.streampack.app.utils.toast
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {

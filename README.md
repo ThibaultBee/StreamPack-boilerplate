@@ -18,5 +18,6 @@ See [StreamPack](https://github.com/ThibaultBee/StreamPack) for more settings an
 1. Click on "Use this template" to create a new repository from this template.
 2. Clone your new repository.
 3. Open the project with Android Studio.
-4. Set your RTMP or SRT server URL in `MainActivity.kt`.
+4. Replace default `rtmp://my.server.url:1935/app/streamKey` by your RTMP or SRT server URL in
+   `MainViewModel.kt`.
 5. Run the application on a device or an emulator.

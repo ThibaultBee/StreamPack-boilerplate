@@ -1,4 +1,4 @@
-package io.github.thibaultbee.streampack.example.utils
+package io.github.thibaultbee.streampack.app.utils
 
 import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity

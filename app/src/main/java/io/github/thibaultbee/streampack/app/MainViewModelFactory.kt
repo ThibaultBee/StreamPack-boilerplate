@@ -1,4 +1,4 @@
-package io.github.thibaultbee.streampack.example
+package io.github.thibaultbee.streampack.app
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
