@@ -3,6 +3,7 @@ package io.github.thibaultbee.streampack.app
 import android.Manifest
 import android.media.AudioFormat
 import android.media.MediaFormat
+import android.util.Log
 import android.util.Size
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
@@ -12,6 +13,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import io.github.thibaultbee.streampack.app.data.rotation.RotationRepository
 import io.github.thibaultbee.streampack.core.elements.sources.audio.audiorecord.MicrophoneSourceFactory
+import io.github.thibaultbee.streampack.core.interfaces.releaseBlocking
 import io.github.thibaultbee.streampack.core.interfaces.setCameraId
 import io.github.thibaultbee.streampack.core.interfaces.startStream
 import io.github.thibaultbee.streampack.core.streamers.single.AudioConfig
@@ -19,6 +21,7 @@ import io.github.thibaultbee.streampack.core.streamers.single.SingleStreamer
 import io.github.thibaultbee.streampack.core.streamers.single.VideoConfig
 import io.github.thibaultbee.streampack.core.utils.extensions.isClosedException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -53,6 +56,10 @@ class MainViewModel(
     val throwableLiveData: LiveData<Throwable> =
         streamer.throwableFlow.filterNotNull().filter { !it.isClosedException }.asLiveData()
 
+    /** The connection failed to established */
+    private val _pendingConnectionFailedFlow = MutableStateFlow<Throwable?>(null)
+    val pendingConnectionFailedLiveData: LiveData<Throwable> =
+        _pendingConnectionFailedFlow.filterNotNull().asLiveData()
 
     init {
         /**
@@ -70,23 +77,29 @@ class MainViewModel(
      *
      * Replace with a valid URL.
      */
-    suspend fun startStream() {
-        _isTryingConnectionLiveData.postValue(true)
-        try {
-            /**
-             * For SRT, use srt://my.server.url:9998?streamid=myStreamId&passphrase=myPassphrase
-             */
-            streamer.startStream("rtmp://my.server.url:1935/app/streamKey")
-        } finally {
-            _isTryingConnectionLiveData.postValue(false)
+    fun startStream() {
+        viewModelScope.launch {
+            _isTryingConnectionLiveData.postValue(true)
+            try {
+                /**
+                 * For SRT, use srt://my.server.url:9998?streamid=myStreamId&passphrase=myPassphrase
+                 */
+                streamer.startStream("rtmp://my.server.url:1935/app/streamKey")
+            } catch (t: Throwable) {
+                _pendingConnectionFailedFlow.emit(t)
+            } finally {
+                _isTryingConnectionLiveData.postValue(false)
+            }
         }
     }
 
     /**
      * Stops the stream.
      */
-    suspend fun stopStream() {
-        streamer.stopStream()
+    fun stopStream() {
+        viewModelScope.launch {
+            streamer.stopStream()
+        }
     }
 
     /**
@@ -95,7 +108,7 @@ class MainViewModel(
      * You can verify the device supported configuration with [SingleStreamer.getInfo].
      */
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    suspend fun setAudioConfig() {
+    fun setAudioConfig() {
         /**
          * There are other parameters in the [AudioConfig] such as:
          * - byteFormat
@@ -109,7 +122,9 @@ class MainViewModel(
             channelConfig = AudioFormat.CHANNEL_IN_STEREO
         )
 
-        streamer.setAudioConfig(audioConfig)
+        viewModelScope.launch {
+            streamer.setAudioConfig(audioConfig)
+        }
     }
 
     /**
@@ -117,7 +132,7 @@ class MainViewModel(
      *
      * You can verify the device supported configuration with [SingleStreamer.getInfo].
      */
-    suspend fun setVideoConfig() {
+    fun setVideoConfig() {
         /**
          * There are other parameters in the [VideoConfig] such as:
          * - bitrate
@@ -130,14 +145,18 @@ class MainViewModel(
             mimeType = MediaFormat.MIMETYPE_VIDEO_AVC, resolution = Size(1280, 720), fps = 25
         )
 
-        streamer.setVideoConfig(videoConfig)
+        viewModelScope.launch {
+            streamer.setVideoConfig(videoConfig)
+        }
     }
 
     /**
      * Sets the microphone as the audio source.
      */
-    suspend fun setAudioSource() {
-        streamer.setAudioSource(MicrophoneSourceFactory())
+    fun setAudioSource() {
+        viewModelScope.launch {
+            streamer.setAudioSource(MicrophoneSourceFactory())
+        }
     }
 
     /**
@@ -146,8 +165,14 @@ class MainViewModel(
      * @param cameraId The camera id.
      */
     @RequiresPermission(Manifest.permission.CAMERA)
-    suspend fun setCameraId(cameraId: String) {
-        streamer.setCameraId(cameraId)
+    fun setCameraId(cameraId: String) {
+        viewModelScope.launch {
+            streamer.setCameraId(cameraId)
+        }
+    }
+
+    override fun onCleared() {
+        streamer.releaseBlocking()
     }
 
     companion object {

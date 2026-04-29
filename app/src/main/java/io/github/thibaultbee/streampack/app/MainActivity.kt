@@ -10,11 +10,11 @@ import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.github.thibaultbee.streampack.app.databinding.ActivityMainBinding
-import io.github.thibaultbee.streampack.core.elements.sources.video.camera.extensions.defaultCameraId
-import io.github.thibaultbee.streampack.core.streamers.lifecycle.StreamerActivityLifeCycleObserver
 import io.github.thibaultbee.streampack.app.utils.PermissionsManager
 import io.github.thibaultbee.streampack.app.utils.showDialog
 import io.github.thibaultbee.streampack.app.utils.toast
+import io.github.thibaultbee.streampack.core.elements.sources.video.camera.extensions.defaultCameraId
+import io.github.thibaultbee.streampack.core.streamers.lifecycle.StreamerViewModelLifeCycleObserver
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Listen to lifecycle events. So we don't have to stop the streamer manually in `onPause` and release in `onDestroy
      */
-    private val streamerLifeCycleObserver by lazy { StreamerActivityLifeCycleObserver(viewModel.streamer) }
+    private val streamerLifeCycleObserver by lazy { StreamerViewModelLifeCycleObserver(viewModel.streamer) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,23 +73,9 @@ class MainActivity : AppCompatActivity() {
         binding.liveButton.setOnCheckedChangeListener { view, isChecked ->
             if (view.isPressed) {
                 if (isChecked) {
-                    /**
-                     * Dispatch from main thread is forced to avoid making network call on main thread
-                     * with coroutines.
-                     */
-                    lifecycleScope.launch {
-                        try {
-                            viewModel.startStream()
-                        } catch (e: Exception) {
-                            binding.liveButton.isChecked = false
-                            Log.e(TAG, "Failed to connect", e)
-                            toast("Connection failed: ${e.message}")
-                        }
-                    }
+                    viewModel.startStream()
                 } else {
-                    lifecycleScope.launch {
-                        viewModel.stopStream()
-                    }
+                    viewModel.stopStream()
                 }
             }
         }
@@ -102,10 +88,17 @@ class MainActivity : AppCompatActivity() {
 
         // Bind events
         viewModel.closedThrowableLiveData.observe(this) {
+            Log.e(TAG, "Disconnect: $it")
+            toast("Disconnect: ${it.message}")
+        }
+
+        viewModel.pendingConnectionFailedLiveData.observe(this) {
+            Log.e(TAG, "Connection error: $it")
             toast("Connection error: ${it.message}")
         }
 
         viewModel.throwableLiveData.observe(this) {
+            Log.e(TAG, "Error: $it")
             toast("Error: ${it.message}")
         }
 
@@ -163,10 +156,8 @@ class MainActivity : AppCompatActivity() {
     @RequiresPermission(allOf = [Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO])
     private fun setAVSource() {
         // Set audio and video sources.
-        lifecycleScope.launch {
-            viewModel.setAudioSource()
-            viewModel.setCameraId(this@MainActivity.defaultCameraId)
-        }
+        viewModel.setAudioSource()
+        viewModel.setCameraId(this@MainActivity.defaultCameraId)
     }
 
     private fun setStreamerView() {
@@ -177,17 +168,8 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun configureStreamer() {
-        lifecycleScope.launch {
-            viewModel.setAudioConfig()
-            viewModel.setVideoConfig()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        // Unregister the lifecycle observer
-        lifecycle.removeObserver(streamerLifeCycleObserver)
+        viewModel.setAudioConfig()
+        viewModel.setVideoConfig()
     }
 
     private fun toast(message: String) {
