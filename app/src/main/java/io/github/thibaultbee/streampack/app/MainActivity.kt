@@ -14,7 +14,7 @@ import io.github.thibaultbee.streampack.app.utils.PermissionsManager
 import io.github.thibaultbee.streampack.app.utils.showDialog
 import io.github.thibaultbee.streampack.app.utils.toast
 import io.github.thibaultbee.streampack.core.elements.sources.video.camera.extensions.defaultCameraId
-import io.github.thibaultbee.streampack.core.streamers.lifecycle.StreamerViewModelLifeCycleObserver
+import io.github.thibaultbee.streampack.core.streamers.lifecycle.StreamerLifeCycleObserver
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Listen to lifecycle events. So we don't have to stop the streamer manually in `onPause` and release in `onDestroy
      */
-    private val streamerLifeCycleObserver by lazy { StreamerViewModelLifeCycleObserver(viewModel.streamer) }
+    private val streamerLifeCycleObserver by lazy { StreamerLifeCycleObserver(viewModel.streamer) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     private fun setAVSource() {
         // Set audio and video sources.
         viewModel.setAudioSource()
-        viewModel.setCameraId(this@MainActivity.defaultCameraId)
+        viewModel.setCameraId(defaultCameraId)
     }
 
     private fun setStreamerView() {

@@ -37,14 +37,12 @@ class MainViewModelFactory(private val application: Application) :
         private fun createStreamer(application: Application): SingleStreamer {
             // 1 output
             return SingleStreamer(
-                application, withAudio = true, withVideo = true
+                application
             )
             // 2 outputs: uncomment the line below
             /*
             DualStreamer(
-                this,
-                withAudio = true,
-                withVideo = true
+                this
             )
             */
         }
