@@ -1,15 +1,15 @@
 [versions]
-agp = "9.0.0"
+agp = "9.2.1"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
-coreKtx = "1.17.0"
+coreKtx = "1.19.0"
 espressoCore = "3.7.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-kotlin = "2.3.0"
-lifecycleRuntimeKtx = "2.10.0"
-material = "1.13.0"
-streampack = "3.1.1"
+kotlin = "2.4.10"
+lifecycleRuntimeKtx = "2.11.0"
+material = "1.14.0"
+streampack = "3.1.2"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
